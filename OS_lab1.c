@@ -31,7 +31,7 @@ void* consumer(void* arg) {
     for (int i = 0; i < count; ++i) {
         pthread_mutex_lock(&lock);
         while (!ready) {
-            pthread_cond_wait(&cond, &lock)
+            pthread_cond_wait(&cond, &lock);
         }
         ready = false;
         printf("consumed\n");
