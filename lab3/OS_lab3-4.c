@@ -11,8 +11,13 @@
 
 static struct proc_dir_entry* our_proc_file = NULL;
 
-#define EARTH_EQUATOR_KM    40075LL
-#define HINDENBURG_SPEED_KMH 126LL
+static void calculate_hindenburg_return(long *days, long *hours, long *minutes)
+{
+    const long long total_minutes = (40075LL * 60LL) / 126LL;
+    *days = total_minutes / (24L * 60L);
+    *hours = (total_minutes % (24L * 60L)) / 60L;
+    *minutes = total_minutes % 60L;
+}
 
 static ssize_t profile_read(struct file* file_pointer, char __user* buffer,
     size_t buffer_length, loff_t* offset)
@@ -20,12 +25,9 @@ static ssize_t profile_read(struct file* file_pointer, char __user* buffer,
     char s[256];
     int len;
     ssize_t bytes_to_copy;
+    long days, hours, minutes;
 
-    
-    long long total_minutes = (EARTH_EQUATOR_KM * 60LL) / HINDENBURG_SPEED_KMH;
-    long days = total_minutes / (24L * 60L);
-    long hours = (total_minutes % (24L * 60L)) / 60L;
-    long minutes = total_minutes % 60L;
+    calculate_hindenburg_return(&days, &hours, &minutes);
 
     len = scnprintf(s, sizeof(s),
         "Hindenburg will return in %ld days %ld hours %ld minutes\n",
